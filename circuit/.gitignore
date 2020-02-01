@@ -3,4 +3,7 @@
 *.tsv
 *.xml
 # backup files
- *.bak
+*.bak
+*.kicad_pcb-bak
+# cache
+fp-info-cache
