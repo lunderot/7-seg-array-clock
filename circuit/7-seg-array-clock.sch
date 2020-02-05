@@ -34,13 +34,7 @@ F4 "DIN" I L 6550 1350 50
 F5 "DOUT" I R 7400 1350 50 
 $EndSheet
 $Sheet
-S 2900 1100 850  400 
-U 5E35994B
-F0 "controller" 50
-F1 "controller.sch" 50
-$EndSheet
-$Sheet
-S 2850 2450 850  400 
+S 2900 2150 850  400 
 U 5E359990
 F0 "power" 50
 F1 "power.sch" 50
@@ -282,4 +276,91 @@ Wire Wire Line
 NoConn ~ 8600 5700
 Wire Wire Line
 	8600 5700 8500 5700
+Wire Wire Line
+	3750 1350 5450 1350
+$Sheet
+S 2900 1150 850  400 
+U 5E35994B
+F0 "controller" 50
+F1 "controller.sch" 50
+F2 "DOUT" I R 3750 1350 50 
+F3 "CLK" I R 3750 1200 50 
+F4 "LOAD" I R 3750 1500 50 
+$EndSheet
+Text GLabel 5450 1250 0    50   Input ~ 0
+LOAD
+Text GLabel 6550 1250 0    50   Input ~ 0
+LOAD
+Text GLabel 7650 1250 0    50   Input ~ 0
+LOAD
+Text GLabel 7650 2100 0    50   Input ~ 0
+LOAD
+Text GLabel 6550 2100 0    50   Input ~ 0
+LOAD
+Text GLabel 5450 2100 0    50   Input ~ 0
+LOAD
+Text GLabel 7650 2950 0    50   Input ~ 0
+LOAD
+Text GLabel 6550 2950 0    50   Input ~ 0
+LOAD
+Text GLabel 5450 2950 0    50   Input ~ 0
+LOAD
+Text GLabel 5450 3800 0    50   Input ~ 0
+LOAD
+Text GLabel 6550 3800 0    50   Input ~ 0
+LOAD
+Text GLabel 7650 3800 0    50   Input ~ 0
+LOAD
+Text GLabel 7650 4700 0    50   Input ~ 0
+LOAD
+Text GLabel 6550 4700 0    50   Input ~ 0
+LOAD
+Text GLabel 5450 4700 0    50   Input ~ 0
+LOAD
+Text GLabel 5450 5600 0    50   Input ~ 0
+LOAD
+Text GLabel 6550 5600 0    50   Input ~ 0
+LOAD
+Text GLabel 7650 5600 0    50   Input ~ 0
+LOAD
+Text GLabel 3750 1500 2    50   Input ~ 0
+LOAD
+Text GLabel 3750 1200 2    50   Input ~ 0
+CLK
+Text GLabel 5450 1150 0    50   Input ~ 0
+CLK
+Text GLabel 6550 1150 0    50   Input ~ 0
+CLK
+Text GLabel 7650 1150 0    50   Input ~ 0
+CLK
+Text GLabel 5450 2000 0    50   Input ~ 0
+CLK
+Text GLabel 6550 2000 0    50   Input ~ 0
+CLK
+Text GLabel 7650 2000 0    50   Input ~ 0
+CLK
+Text GLabel 7650 2850 0    50   Input ~ 0
+CLK
+Text GLabel 6550 2850 0    50   Input ~ 0
+CLK
+Text GLabel 5450 2850 0    50   Input ~ 0
+CLK
+Text GLabel 5450 3700 0    50   Input ~ 0
+CLK
+Text GLabel 6550 3700 0    50   Input ~ 0
+CLK
+Text GLabel 7650 3700 0    50   Input ~ 0
+CLK
+Text GLabel 7650 4600 0    50   Input ~ 0
+CLK
+Text GLabel 6550 4600 0    50   Input ~ 0
+CLK
+Text GLabel 5450 4600 0    50   Input ~ 0
+CLK
+Text GLabel 5450 5500 0    50   Input ~ 0
+CLK
+Text GLabel 6550 5500 0    50   Input ~ 0
+CLK
+Text GLabel 7650 5500 0    50   Input ~ 0
+CLK
 $EndSCHEMATC

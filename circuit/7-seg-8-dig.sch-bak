@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 21 21
+Sheet 20 21
 Title ""
 Date ""
 Rev ""
@@ -39,7 +39,7 @@ AR Path="/5E35D21E/5E380CD7" Ref="U50"  Part="1"
 AR Path="/5E35D4DB/5E380CD7" Ref="U53"  Part="1" 
 F 0 "U53" H 3450 3067 50  0000 C CNN
 F 1 "CC56-12EWA" H 3450 2976 50  0000 C CNN
-F 2 "Display_7Segment:CA56-12EWA" H 3450 1800 50  0001 C CNN
+F 2 "circuit:7seg" H 3450 1800 50  0001 C CNN
 F 3 "http://www.kingbrightusa.com/images/catalog/SPEC/CA56-12EWA.pdf" H 3020 2430 50  0001 C CNN
 	1    3450 2400
 	1    0    0    -1  
@@ -101,7 +101,7 @@ AR Path="/5E35D21E/5E380CE3" Ref="U52"  Part="1"
 AR Path="/5E35D4DB/5E380CE3" Ref="U55"  Part="1" 
 F 0 "U55" H 6200 3067 50  0000 C CNN
 F 1 "CC56-12EWA" H 6200 2976 50  0000 C CNN
-F 2 "Display_7Segment:CA56-12EWA" H 6200 1800 50  0001 C CNN
+F 2 "circuit:7seg" H 6200 1800 50  0001 C CNN
 F 3 "http://www.kingbrightusa.com/images/catalog/SPEC/CA56-12EWA.pdf" H 5770 2430 50  0001 C CNN
 	1    6200 2400
 	1    0    0    -1  
