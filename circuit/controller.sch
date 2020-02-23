@@ -173,7 +173,7 @@ F 3 "~" H 6150 4000 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	6000 4000 5650 4000
+	6000 4000 5950 4000
 $Comp
 L Device:R R21
 U 1 1 5E3BDFD4
@@ -259,11 +259,9 @@ Wire Wire Line
 	5650 3400 6800 3400
 Wire Wire Line
 	5050 4400 5050 4950
-Text HLabel 5650 3600 2    50   Input ~ 0
+Text HLabel 5650 3800 2    50   Input ~ 0
 DOUT
 NoConn ~ 5650 3300
-NoConn ~ 5650 3800
-NoConn ~ 5650 3900
 NoConn ~ 5650 4100
 NoConn ~ 4450 4200
 NoConn ~ 4450 4100
@@ -272,8 +270,16 @@ NoConn ~ 4450 3900
 NoConn ~ 4450 3800
 NoConn ~ 4450 3700
 NoConn ~ 4450 3500
-Text HLabel 5650 3500 2    50   Input ~ 0
+Text HLabel 5650 3900 2    50   Input ~ 0
 CLK
-Text HLabel 5650 3700 2    50   Input ~ 0
+Text HLabel 5950 3750 2    50   Input ~ 0
 LOAD
+Wire Wire Line
+	5950 3750 5950 4000
+Connection ~ 5950 4000
+Wire Wire Line
+	5950 4000 5650 4000
+NoConn ~ 5650 3700
+NoConn ~ 5650 3600
+NoConn ~ 5650 3500
 $EndSCHEMATC
