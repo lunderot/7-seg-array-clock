@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source D:\Projects\7-seg-array-clock\circuit\7-seg-array-clock.sch)
-    (date "02/23/20 16:24:47")
+    (date "03/12/20 20:01:52")
     (tool "Eeschema (5.1.5)-3")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
