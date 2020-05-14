@@ -1,32 +1,7 @@
-#include <LEDMatrixDriver.hpp>
-#include <NTPClient.h>
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
+#include <SPI.h>
 #include "wifi_config.h"
-
-const int NO_OF_DRIVERS = 1;
-LEDMatrixDriver lmd(NO_OF_DRIVERS, SS);
-
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, 3600 * 2);
-
-void setup()
-{
-	lmd.setEnabled(true);
-	lmd.setIntensity(2);
-	lmd.setScanLimit(7);
-
-	WiFi.begin(ssid, password);
-
-	while (WiFi.status() != WL_CONNECTED)
-	{
-		delay(500);
-	}
-
-	timeClient.begin();
-}
-
-int counter = 0;
 
 uint8_t segs[] = {
 	0b01111110,
@@ -41,17 +16,213 @@ uint8_t segs[] = {
 	0b01111011,
 };
 
+#define NUM_CHIPS 18
+#define NUM_DIGITS NUM_CHIPS * 8
+
+SPISettings spiSettings(10000000, MSBFIRST, SPI_MODE0);
+
+void sendAll(uint16_t command)
+{
+	SPI.beginTransaction(spiSettings);
+	digitalWrite(SS, 0);
+	for (size_t i = 0; i < NUM_CHIPS; i++)
+	{
+		SPI.transfer16(command);
+	}
+	digitalWrite(SS, 1);
+	SPI.endTransaction();
+}
+
+void sendBuffer(uint8_t *buffer)
+{
+	for (size_t j = 0; j < 8; j++)
+	{
+		SPI.beginTransaction(spiSettings);
+		digitalWrite(SS, 0);
+		for (size_t i = 0; i < NUM_CHIPS; i++)
+		{
+			int index = 8 * i + j;
+			int dig = (j + 1) << 8;
+			SPI.transfer16(dig | buffer[index]);
+		}
+		digitalWrite(SS, 1);
+		SPI.endTransaction();
+	}
+}
+
+void setup()
+{
+	pinMode(SS, OUTPUT);
+	digitalWrite(SS, 1);
+	SPI.begin();
+	SPI.setHwCs(false);
+
+	sendAll(0x0F00); //Disable display test
+	sendAll(0x0900); //Decode mode none
+	sendAll(0x0B07); //Scan limit all
+	sendAll(0x0A02); //Intensity 2
+	sendAll(0x0100); //Set all digits to off
+	sendAll(0x0200);
+	sendAll(0x0300);
+	sendAll(0x0400);
+	sendAll(0x0500);
+	sendAll(0x0600);
+	sendAll(0x0700);
+	sendAll(0x0800);
+	sendAll(0x0C01); //Enable display
+}
+
+int count = 0;
+
 void loop()
 {
-	timeClient.update();
-	uint8_t *buffer = lmd.getFrameBuffer();
-	int hour = timeClient.getHours();
-	int min = timeClient.getMinutes();
-	buffer[0] = segs[(hour / 10) % 10];
-	buffer[1] = segs[hour % 10];
-	buffer[2] = segs[(min / 10) % 10];
-	buffer[3] = segs[min % 10];
+	uint8_t data[] = {
+		segs[0],
+		segs[1],
+		segs[2],
+		segs[3],
+		segs[4],
+		segs[5],
+		segs[6],
+		segs[7],
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xAA,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xBB,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xCC,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xDD,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xEE,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+		0xFF,
+	};
+	sendBuffer(data);
 
-	lmd.display();
-	delay(5000);
+	delay(500);
 }
