@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <SPI.h>
+#include <NTPClient.h>
 #include "wifi_config.h"
 #include "bigsegs.h"
 
@@ -10,6 +11,9 @@
 #define DISPLAY_HEIGHT 6
 
 SPISettings spiSettings(5000000, MSBFIRST, SPI_MODE0);
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600 * 2, 60000);
+
 uint8_t data[NUM_DIGITS] = {0};
 int count = 0;
 
@@ -60,6 +64,12 @@ void writeBigSeg(uint8_t *data, uint8_t *const segs, uint8_t digit, uint8_t offs
 	}
 }
 
+void writeDots(uint8_t *data, bool state, uint8_t on, uint8_t off)
+{
+	data[(24 * 1 + 12)] = state ? on : off;
+	data[(24 * 4 + 11)] = state ? on : off;
+}
+
 void setup()
 {
 	pinMode(SS, OUTPUT);
@@ -72,21 +82,38 @@ void setup()
 	sendAll(0x0B07); //Scan limit all
 	sendAll(0x0A02); //Intensity 2
 	sendAll(0x0C01); //Enable display
+
+	WiFi.begin(ssid, password);
+
+	while (WiFi.status() != WL_CONNECTED)
+	{
+		delay(200);
+		data[0] ^= 0b10000000;
+		sendBuffer(data);
+	}
+	data[0] = 0b00000000;
+	timeClient.begin();
 }
 
 void loop()
 {
-	writeBigSeg(data, bigsegs, random(10), 0, false);
-	writeBigSeg(data, bigsegs, random(10), 5, true);
-	writeBigSeg(data, bigsegs, random(10), 13, false);
-	writeBigSeg(data, bigsegs, random(10), 18, true);
-	count++;
-	if (count % 30 == 0)
+	timeClient.update();
+	int hour = timeClient.getHours();
+	int minute = timeClient.getMinutes();
+	int seconds = timeClient.getSeconds();
+
+	writeBigSeg(data, bigsegs, hour / 10, 0, false);
+	writeBigSeg(data, bigsegs, hour % 10, 5, true);
+	writeBigSeg(data, bigsegs, minute / 10, 13, false);
+	writeBigSeg(data, bigsegs, minute % 10, 18, true);
+	writeDots(data, seconds % 2, 0b00011101, 0b00000000);
+	if (++count % 30 == 0)
 	{
-		sendAll(0x0A02); //Intensity 2
-		sendAll(0x0F00); //Disable display test
-		sendAll(0x0C01); //Enable display
+		count = 0;
+		sendAll(0x0A02);
+		sendAll(0x0F00);
+		sendAll(0x0C01);
 	}
 	sendBuffer(data);
-	delay(3000);
+	delay(1000);
 }
