@@ -74,13 +74,12 @@ void clock_function() {
 	timeClient.update();
 	int hour = timeClient.getHours();
 	int minute = timeClient.getMinutes();
-	int seconds = timeClient.getSeconds();
 
 	writeBigSeg(data, bigsegs, hour / 10, 0, false);
 	writeBigSeg(data, bigsegs, hour % 10, 5, true);
 	writeBigSeg(data, bigsegs, minute / 10, 13, false);
 	writeBigSeg(data, bigsegs, minute % 10, 18, true);
-	writeDots(data, seconds % 2, 0b00011101, 0b00000000);
+	writeDots(data, true, 0b00011101, 0b00000000);
 	if (++count % 30 == 0)
 	{
 		count = 0;
@@ -162,6 +161,6 @@ void setup()
 
 void loop()
 {
-	pattern_function();
+	clock_function();
 	delay(33);
 }
