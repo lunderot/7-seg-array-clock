@@ -12,7 +12,7 @@
 
 SPISettings spiSettings(5000000, MSBFIRST, SPI_MODE0);
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600 * 2, 60000);
+NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600 * 1, 60000);
 
 uint8_t data[NUM_DIGITS] = {0};
 int count = 0;
@@ -80,13 +80,6 @@ void clock_function() {
 	writeBigSeg(data, bigsegs, minute / 10, 13, false);
 	writeBigSeg(data, bigsegs, minute % 10, 18, true);
 	writeDots(data, true, 0b00011101, 0b00000000);
-	if (++count % 30 == 0)
-	{
-		count = 0;
-		sendAll(0x0A02);
-		sendAll(0x0F00);
-		sendAll(0x0C01);
-	}
 	sendBuffer(data);
 }
 
@@ -127,9 +120,6 @@ void pattern_function() {
 	if (++count % NUM_FRAMES == 0)
 	{
 		count = 0;
-		sendAll(0x0A02);
-		sendAll(0x0F00);
-		sendAll(0x0C01);
 	}
 	sendBuffer(pattern+(144*count));
 }
@@ -144,7 +134,7 @@ void setup()
 	sendAll(0x0F00); //Disable display test
 	sendAll(0x0900); //Decode mode none
 	sendAll(0x0B07); //Scan limit all
-	sendAll(0x0A02); //Intensity 2
+	sendAll(0x0A00); //Intensity 0
 	sendAll(0x0C01); //Enable display
 
 	WiFi.begin(ssid, password);
