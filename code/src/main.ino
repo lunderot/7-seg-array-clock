@@ -4,6 +4,7 @@
 #include <NTPClient.h>
 #include <ESP8266WebServer.h>
 #include <EEPROM.h>
+#include <time.h>
 #include "bigsegs.h"
 
 #define NUM_CHIPS 18
@@ -113,11 +114,36 @@ void writeDots(uint8_t *data, bool state, uint8_t on, uint8_t off)
 	data[(24 * 4 + 11)] = state ? on : off;
 }
 
+int isSummerTimeSweden(time_t timestamp)
+{
+	struct tm *timeinfo;
+	timeinfo = localtime(&timestamp);
+
+	int year = timeinfo->tm_year + 1900;
+	int month = timeinfo->tm_mon + 1;
+	int day = timeinfo->tm_mday;
+
+	if (year >= 1996)
+	{
+		int lastSundayInMarch = 31 - (((5 * year) / 4 + 4) % 7);
+		int lastSundayInOctober = 31 - (((5 * year) / 4 + 1) % 7);
+
+		if ((month == 3 && day > lastSundayInMarch) || (month > 3 && month < 10) ||
+			(month == 10 && day < lastSundayInOctober))
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
 void clock_function()
 {
 	timeClient.update();
 	int hour = timeClient.getHours();
 	int minute = timeClient.getMinutes();
+
+	hour = hour + isSummerTimeSweden(timeClient.getEpochTime());
 
 	writeBigSeg(data, bigsegs, hour / 10, 0, false);
 	writeBigSeg(data, bigsegs, hour % 10, 5, true);
