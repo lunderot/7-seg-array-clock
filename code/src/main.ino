@@ -59,7 +59,7 @@ struct wifi_data_t
 	char ssid[128];
 	char password[128];
 	int offset;
-};
+} wifiData;
 
 void sendAll(uint16_t command)
 {
@@ -114,7 +114,7 @@ void writeDots(uint8_t *data, bool state, uint8_t on, uint8_t off)
 	data[(24 * 4 + 11)] = state ? on : off;
 }
 
-int isSummerTimeSweden(time_t timestamp)
+int isCEST(time_t timestamp)
 {
 	struct tm *timeinfo;
 	timeinfo = localtime(&timestamp);
@@ -137,13 +137,15 @@ int isSummerTimeSweden(time_t timestamp)
 	return 0;
 }
 
-void clock_function()
+void clockFunction()
 {
 	timeClient.update();
 	int hour = timeClient.getHours();
 	int minute = timeClient.getMinutes();
-
-	hour = hour + isSummerTimeSweden(timeClient.getEpochTime());
+	if (hour == 0)
+	{
+		timeClient.setTimeOffset(3600 * (wifiData.offset + isCEST(timeClient.getEpochTime())));
+	}
 
 	writeBigSeg(data, bigsegs, hour / 10, 0, false);
 	writeBigSeg(data, bigsegs, hour % 10, 5, true);
@@ -153,7 +155,7 @@ void clock_function()
 	sendBuffer(data);
 }
 
-void pattern_function()
+void patternFunction()
 {
 	if (++count % NUM_FRAMES == 0)
 	{
@@ -172,9 +174,6 @@ void handlePost()
 	const String &ssid = webServer.arg("ssid");
 	const String &password = webServer.arg("password");
 	int offset = webServer.arg("offset").toInt();
-
-	wifi_data_t wifiData = {0};
-	EEPROM.get(0, wifiData);
 
 	if (ssid.length() > 0)
 	{
@@ -228,17 +227,18 @@ void setup()
 	sendAll(0x0C01); // Enable display
 
 	EEPROM.begin(sizeof(wifi_data_t));
-	wifi_data_t wifiData = {0};
 	EEPROM.get(0, wifiData);
 
 	connectOrHost(wifiData.ssid, wifiData.password);
-	timeClient.setTimeOffset(3600 * wifiData.offset);
+
 	timeClient.begin();
+	timeClient.forceUpdate();
+	timeClient.setTimeOffset(3600 * (wifiData.offset + isCEST(timeClient.getEpochTime())));
 }
 
 void loop()
 {
 	webServer.handleClient();
-	clock_function();
+	clockFunction();
 	delay(10);
 }
